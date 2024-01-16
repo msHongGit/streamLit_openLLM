@@ -50,18 +50,14 @@ def main():
     # with 구문 : 구성 요소에 딸린 요소를 정하기 위한거
     with st.sidebar:
         uploaded_files =  st.file_uploader("Upload your file", type=['pdf','docx','pptx'], accept_multiple_files=True)
-        openai_api_key = st.text_input("OpenAI API Key", key="chatbot_api_key", type="password")
         process = st.button("Process")
 
-    if process:     # 만약 Process 버튼이 눌리면
-        if not openai_api_key:
-            st.info("Please add your OpenAI API key to continue.")
-            st.stop()
+    if process:     # 만약 Process 버튼이 눌리면        
         files_text = get_text(uploaded_files)
         text_chunks = get_text_chunks(files_text)
         vetorestore = get_vectorstore(text_chunks)
      
-        st.session_state.conversation = get_conversation_chain(vetorestore, openai_api_key)
+        st.session_state.conversation = get_conversation_chain(vetorestore)
 
         st.session_state.processComplete = True
 
