@@ -8,8 +8,6 @@ loguru
 pypdf
 docx2txt
 python-pptx
-
-torch
 transformers @ git+https://github.com/huggingface/transformers.git
 
 # #양자화에 필요한 패키지 설치
