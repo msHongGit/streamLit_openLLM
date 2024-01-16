@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 from loguru import logger
 
@@ -86,10 +87,10 @@ def main():
         with st.chat_message("assistant"):
             chain = st.session_state.conversation
             
-            with st.spinner("Thinking..."):     # 로딩시 progress를 표시하는 UI
-                result = chain({"question": query})
-                with get_openai_callback() as cb:
-                    st.session_state.chat_history = result['chat_history']
+            with st.spinner("Thinking..."):     # 로딩시 progress를 표시하는 UI                
+                result = chain({"question": query})                
+                time.sleep(0.5)
+                st.session_state.chat_history = result['chat_history']
                 response = result['answer']
                 source_documents = result['source_documents']
 
@@ -133,10 +134,12 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
+
+    model_name = "jhgan/ko-sbert-nli"   # 한국어 임베딩 모델 로딩
+    encode_kwargs = {'normalize_embeddings': True}    # 임베딩을 통해 원하는 근거 자료를 찾는 retriver 역할을 하기 위해 정규화를 켜야함
     embeddings = HuggingFaceEmbeddings(
-                                        model_name="jhgan/ko-sbert-nli",
-                                        model_kwargs={'device': 'cpu'},
-                                        encode_kwargs={'normalize_embeddings': True}
+                                        model_name=model_name,
+                                        encode_kwargs=encode_kwargs
                                         )  
     vectordb = FAISS.from_documents(text_chunks, embeddings)
     return vectordb
@@ -178,7 +181,7 @@ def get_conversation_chain(vetorestore):
     prompt = PromptTemplate(
         input_variables=["context", "question"],
         template=prompt_template,
-    )
+    )    
 
     # Create llm chain
     llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)

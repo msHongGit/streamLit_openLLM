@@ -1,4 +1,4 @@
-pysqlite3-binary
+pysqlite3-wheels
 langchain
 chromadb
 unstructured
@@ -8,9 +8,11 @@ loguru
 pypdf
 docx2txt
 python-pptx
-transformers @ git+https://github.com/huggingface/transformers.git
+transformers
 
-# #양자화에 필요한 패키지 설치
+# @ git+https://github.com/huggingface/transformers.git
+
+# #����ȭ�� �ʿ��� ��Ű�� ��ġ
 # bitsandbytes
 # peft @ git+https://github.com/huggingface/peft.git
 # accelerate @ git+https://github.com/huggingface/accelerate.git
