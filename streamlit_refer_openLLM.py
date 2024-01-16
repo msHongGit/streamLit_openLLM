@@ -146,7 +146,7 @@ def get_conversation_chain(vetorestore):
     model_id = "kyujinpy/Ko-PlatYi-6B"
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto")
+    model = AutoModelForCausalLM.from_pretrained(model_id, device_map="auto", low_cpu_mem_usage=True)
 
         # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
     text_generation_pipeline = pipeline(
