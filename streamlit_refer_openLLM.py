@@ -160,7 +160,7 @@ def get_conversation_chain(vetorestore):
     repo_id = 'EleutherAI/polyglot-ko-1.3b'
     # repo_id = 'psyche/KoT5-summarization'
     # repo_id = 'mistralai/Mistral-7B-v0.1'
-    llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
+    llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":256})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
 
