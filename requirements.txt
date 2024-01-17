@@ -1,6 +1,5 @@
 pysqlite3-wheels
 langchain
-chromadb
 unstructured
 sentence-transformers
 faiss-cpu
@@ -9,14 +8,15 @@ pypdf
 docx2txt
 python-pptx
 transformers
-torch
 
-# @ git+https://github.com/huggingface/transformers.git
+# torch
+# chromadb
 
 # #����ȭ�� �ʿ��� ��Ű�� ��ġ
 # bitsandbytes
 # peft @ git+https://github.com/huggingface/peft.git
 # accelerate @ git+https://github.com/huggingface/accelerate.git
+# transformers @ git+https://github.com/huggingface/transformers.git
 
 # tiktoken
 # openai
