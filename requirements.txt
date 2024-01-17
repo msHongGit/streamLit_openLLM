@@ -9,6 +9,7 @@ pypdf
 docx2txt
 python-pptx
 transformers
+torch
 
 # @ git+https://github.com/huggingface/transformers.git
 
