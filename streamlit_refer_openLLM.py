@@ -26,6 +26,8 @@ from langchain.memory import StreamlitChatMessageHistory
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
 # API가 아닌 HuggingFace의 오픈소스 LLM을 가져다 쓰기 때문에 필요한 라이브러리 [아래 2가지]
+from langchain.llms import HuggingFaceHub
+
 from langchain.llms import HuggingFacePipeline
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
@@ -146,58 +148,61 @@ def get_vectorstore(text_chunks):
     vectordb = FAISS.from_documents(text_chunks, embeddings)    
     return vectordb
 
-@st.cache(allow_output_mutation=True)
 def get_conversation_chain(vetorestore):
-    # hugging face에서 기학습 모델 로딩
-    model_id = "kyujinpy/Ko-PlatYi-6B"
-    logger.debug("Start HF-LLM tokenizer and model")
-    model = AutoModelForCausalLM.from_pretrained(model_id, return_dict=True, torch_dtype=torch.float16, device_map='auto')
-    logger.debug("load HF-LLM model")
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-    logger.debug("Get HF-LLM tokenizer")    
+    # # hugging face에서 기학습 모델 로딩
+    # model_id = "kyujinpy/Ko-PlatYi-6B"
+    # logger.debug("Start HF-LLM tokenizer and model")
+    # model = AutoModelForCausalLM.from_pretrained(model_id)
+    # logger.debug("load HF-LLM model")
+    # tokenizer = AutoTokenizer.from_pretrained(model_id)
+    # logger.debug("Get HF-LLM tokenizer")    
 
-    # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
-    text_generation_pipeline = pipeline(
-        model=model,
-        tokenizer=tokenizer,
-        task="text-generation",
-        temperature=0, # 답변 샘플링에 있어서 [0] 일관성 있는 대답(사실적 묘사), [1] 다양한 대답(창의적 답변)
-        return_full_text=True,
-        max_new_tokens=300,
-    )
+    # # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
+    # text_generation_pipeline = pipeline(
+    #     model=model,
+    #     tokenizer=tokenizer,
+    #     task="text-generation",
+    #     temperature=0, # 답변 샘플링에 있어서 [0] 일관성 있는 대답(사실적 묘사), [1] 다양한 대답(창의적 답변)
+    #     return_full_text=True,
+    #     max_new_tokens=300,
+    # )
 
-    # bank knowledge
-    prompt_template = """
-    ### [INST]
-    Instruction: Answer the question based on your knowledge.
-    Here is context to help:
+    # # bank knowledge
+    # prompt_template = """
+    # ### [INST]
+    # Instruction: Answer the question based on your knowledge.
+    # Here is context to help:
 
-    {context}
+    # {context}
 
-    ### QUESTION:
-    {question}
+    # ### QUESTION:
+    # {question}
 
-    [/INST]
-    """
+    # [/INST]
+    # """
 
-    koplatyi_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
+    # koplatyi_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
 
-    # Create prompt from prompt template
-    prompt = PromptTemplate(
-        input_variables=["context", "question"],
-        template=prompt_template,
-    )    
+    # # Create prompt from prompt template
+    # prompt = PromptTemplate(
+    #     input_variables=["context", "question"],
+    #     template=prompt_template,
+    # )
 
-    # Create llm chain
-    llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)
+    # # Create llm chain    
+    # llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)
+    # logger.debug("Set HF-LLM model")
 
-    logger.debug("Set HF-LLM model")
+    # Create llm chain    
+    llm_chain = HuggingFaceHub(repo_id="kyujinpy/Ko-PlatYi-6B", model_kwargs={"temperature":0, "max_length":300})
+    logger.debug("Load HF-LLM model")
 
+    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
     conversation_chain = ConversationalRetrievalChain.from_llm(
             llm=llm_chain, 
             chain_type="stuff", 
-            retriever=vetorestore.as_retriever(search_type = 'mmr', vervose = True), 
-            memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer'),  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
+            retriever=vetorestore.as_retriever(search_type='mmr', vervose=True), 
+            memory=memory,  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
             get_chat_history=lambda h: h,   # 들어온 그대로 히스토리에 넣도록 설정
             return_source_documents=True,   # LLM이 참고한 문서를 출력하도록 설정
             verbose=True
