@@ -25,7 +25,7 @@ from langchain.memory import StreamlitChatMessageHistory
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
 # API가 아닌 HuggingFace의 오픈소스 LLM을 가져다 쓰기 때문에 필요한 라이브러리 [아래 2가지]
-from langchain.llms import HuggingFaceHub
+from langchain_community.llms  import HuggingFaceHub
 
 # from langchain.llms import HuggingFacePipeline
 # from langchain.chains import LLMChain
