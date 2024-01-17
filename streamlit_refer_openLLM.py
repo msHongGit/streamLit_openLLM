@@ -1,5 +1,4 @@
 import streamlit as st
-import torch
 import time
 
 from loguru import logger
@@ -29,9 +28,9 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 # API가 아닌 HuggingFace의 오픈소스 LLM을 가져다 쓰기 때문에 필요한 라이브러리 [아래 2가지]
 from langchain.llms import HuggingFaceHub
 
-from langchain.llms import HuggingFacePipeline
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
+# from langchain.llms import HuggingFacePipeline
+# from langchain.chains import LLMChain
+# from langchain.prompts import PromptTemplate
 
 def main():
     st.set_page_config(
@@ -94,18 +93,26 @@ def main():
             chain = st.session_state.conversation
             
             with st.spinner("Thinking..."):     # 로딩시 progress를 표시하는 UI                
+                logger.debug("asked..")
                 result = chain({"question": query})
+                logger.debug("results:{}".format(result['answer']))
+
                 time.sleep(3)
                 # with get_openai_callback() as cb:
-                st.session_state.chat_history = result['chat_history']                
-                response = result['answer']                
+                st.session_state.chat_history = result['chat_history']
+                logger.debug("get chat_history")
+                response = result['answer']
                 source_documents = result['source_documents']
+
+                logger.debug("get answer, source_documents")
 
                 st.markdown(response)
                 with st.expander("참고 문서 확인"):
                     st.markdown(source_documents[0].metadata['source'], help = source_documents[0].page_content)    # help : ? 부분에 마우스를 올리면 text 띄움
                     st.markdown(source_documents[1].metadata['source'], help = source_documents[1].page_content)
                     st.markdown(source_documents[2].metadata['source'], help = source_documents[2].page_content)
+
+                logger.debug("Show answer and set source_documents")
 
         # Add assistant message to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
