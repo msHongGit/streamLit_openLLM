@@ -203,7 +203,7 @@ def get_conversation_chain(vetorestore):
 
     # Create llm chain    
     # llm_chain = HuggingFaceHub(repo_id="kyujinpy/Ko-PlatYi-6B", model_kwargs={"temperature":0.1, "max_length":300})
-    llm_chain = HuggingFaceHub(repo_id="PracticeLLM/Custom-KoLLM-13B-v1", model_kwargs={"temperature":0.5, "max_length":300})
+    llm_chain = HuggingFaceHub(repo_id="chargoddard/loyal-piano-m7-cdpo", model_kwargs={"temperature":0.5, "max_length":300})
     logger.debug("Load HF-LLM model")
 
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
