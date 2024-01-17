@@ -157,55 +157,8 @@ def get_vectorstore(text_chunks):
     return vectordb
 
 def get_conversation_chain(vetorestore):
-    # # hugging face에서 기학습 모델 로딩
-    # model_id = "kyujinpy/Ko-PlatYi-6B"
-    # logger.debug("Start HF-LLM tokenizer and model")
-    # model = AutoModelForCausalLM.from_pretrained(model_id)
-    # logger.debug("load HF-LLM model")
-    # tokenizer = AutoTokenizer.from_pretrained(model_id)
-    # logger.debug("Get HF-LLM tokenizer")    
-
-    # # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
-    # text_generation_pipeline = pipeline(
-    #     model=model,
-    #     tokenizer=tokenizer,
-    #     task="text-generation",
-    #     temperature=0, # 답변 샘플링에 있어서 [0] 일관성 있는 대답(사실적 묘사), [1] 다양한 대답(창의적 답변)
-    #     return_full_text=True,
-    #     max_new_tokens=300,
-    # )
-
-    # # bank knowledge
-    # prompt_template = """
-    # ### [INST]
-    # Instruction: Answer the question based on your knowledge.
-    # Here is context to help:
-
-    # {context}
-
-    # ### QUESTION:
-    # {question}
-
-    # [/INST]
-    # """
-
-    # koplatyi_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
-
-    # # Create prompt from prompt template
-    # prompt = PromptTemplate(
-    #     input_variables=["context", "question"],
-    #     template=prompt_template,
-    # )
-
-    # # Create llm chain    
-    # llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)
-    # logger.debug("Set HF-LLM model")
-
-    # Create llm chain
-    # Currently only 'text2text-generation', 'text-generation', 'summarization' are supported
-    # repo_id = 'google/mt5-base'
-
-    repo_id = 'mistralai/Mistral-7B-v0.1'
+    repo_id = 'kyujinpy/KOR-Orca-Platypus-13B-v2'
+    # repo_id = 'mistralai/Mistral-7B-v0.1'
     llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
