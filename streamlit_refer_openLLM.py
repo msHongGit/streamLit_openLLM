@@ -202,7 +202,7 @@ def get_conversation_chain(vetorestore):
     # logger.debug("Set HF-LLM model")
 
     # Create llm chain    
-    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0, "max_length":300})
+    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":300})
     logger.debug("Load HF-LLM model")
 
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
