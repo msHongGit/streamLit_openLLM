@@ -150,7 +150,9 @@ def get_conversation_chain(vetorestore):
     # hugging face에서 기학습 모델 로딩
     model_id = "kyujinpy/Ko-PlatYi-6B"
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    logger.debug("Start HF-LLM tokenizer and model")
+
+    tokenizer = AutoTokenizer.from_pretrained(model_id)    
     logger.debug("Get HF-LLM tokenizer")
 
     model = AutoModelForCausalLM.from_pretrained(model_id)
