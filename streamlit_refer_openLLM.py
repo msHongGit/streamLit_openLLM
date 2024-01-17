@@ -4,7 +4,6 @@ import time
 from loguru import logger
 
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
 
 # 참조 데이터(PDF, Dox, PPT) 로딩을 위한 라이브러리
 from langchain.document_loaders import PyPDFLoader

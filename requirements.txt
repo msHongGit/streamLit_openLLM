@@ -1,5 +1,6 @@
 pysqlite3-wheels
 langchain
+langchain-community
 unstructured
 sentence-transformers
 faiss-cpu
