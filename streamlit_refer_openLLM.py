@@ -157,7 +157,7 @@ def get_vectorstore(text_chunks):
     return vectordb
 
 def get_conversation_chain(vetorestore):
-    repo_id = 'facebook/xglm-1.7B'
+    repo_id = 'paust/pko-t5-base'
     # repo_id = 'psyche/KoT5-summarization'
     # repo_id = 'mistralai/Mistral-7B-v0.1'
     llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
