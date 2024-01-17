@@ -1,5 +1,6 @@
 import streamlit as st
 import torch
+import time
 
 from loguru import logger
 
@@ -94,8 +95,9 @@ def main():
             
             with st.spinner("Thinking..."):     # 로딩시 progress를 표시하는 UI                
                 result = chain({"question": query})
-                with get_openai_callback() as cb:
-                    st.session_state.chat_history = result['chat_history']                
+                time.sleep(3)
+                # with get_openai_callback() as cb:
+                st.session_state.chat_history = result['chat_history']                
                 response = result['answer']                
                 source_documents = result['source_documents']
 
