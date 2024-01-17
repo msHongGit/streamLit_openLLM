@@ -202,14 +202,14 @@ def get_conversation_chain(vetorestore):
     # logger.debug("Set HF-LLM model")
 
     # Create llm chain    
-    # llm_chain = HuggingFaceHub(repo_id="kyujinpy/Ko-PlatYi-6B", model_kwargs={"temperature":0.1, "max_length":300})
-    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":300})
+    llm_chain = HuggingFaceHub(repo_id="mistralai/Mistral-7B-v0.1", model_kwargs={"temperature":0.2, "max_length":512})
+    # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
 
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
     conversation_chain = ConversationalRetrievalChain.from_llm(
             llm=llm_chain, 
-            chain_type="stuff", 
+            chain_type="stuff",
             retriever=vetorestore.as_retriever(search_type='mmr', vervose=True), 
             memory=memory,  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
             get_chat_history=lambda h: h,   # 들어온 그대로 히스토리에 넣도록 설정

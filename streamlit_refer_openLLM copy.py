@@ -4,7 +4,6 @@ import time
 from loguru import logger
 
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
 
 # 참조 데이터(PDF, Dox, PPT) 로딩을 위한 라이브러리
 from langchain.document_loaders import PyPDFLoader
@@ -96,9 +95,10 @@ def main():
                 logger.debug("asked..")
                 result = chain({"question": query})
                 logger.debug("results:{}".format(result['answer']))
-                # time.sleep(3)
+                # time.sleep(1)
                 # with get_openai_callback() as cb:
-                # st.session_state.chat_history = result['chat_history']
+                st.session_state.chat_history = result['chat_history']
+
                 logger.debug("get chat_history")
                 response = result['answer']
                 source_documents = result['source_documents']
@@ -202,7 +202,8 @@ def get_conversation_chain(vetorestore):
     # logger.debug("Set HF-LLM model")
 
     # Create llm chain    
-    llm_chain = HuggingFaceHub(repo_id="kyujinpy/Ko-PlatYi-6B", model_kwargs={"temperature":0, "max_length":300})
+    # llm_chain = HuggingFaceHub(repo_id="kyujinpy/Ko-PlatYi-6B", model_kwargs={"temperature":0.1, "max_length":300})
+    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":300})
     logger.debug("Load HF-LLM model")
 
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
