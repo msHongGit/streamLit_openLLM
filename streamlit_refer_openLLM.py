@@ -149,15 +149,12 @@ def get_vectorstore(text_chunks):
 @st.cache(allow_output_mutation=True)
 def get_conversation_chain(vetorestore):
     # hugging face에서 기학습 모델 로딩
-    model_id = "KT-AI/midm-bitext-S-7B-inst-v2"
-
+    model_id = "kyujinpy/Ko-PlatYi-6B"
     logger.debug("Start HF-LLM tokenizer and model")
-
-    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-    logger.debug("Get HF-LLM tokenizer")
-
     model = AutoModelForCausalLM.from_pretrained(model_id, return_dict=True, torch_dtype=torch.float16, device_map='auto')
     logger.debug("load HF-LLM model")
+    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    logger.debug("Get HF-LLM tokenizer")    
 
     # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
     text_generation_pipeline = pipeline(
