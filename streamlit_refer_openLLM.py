@@ -96,9 +96,10 @@ def main():
                 logger.debug("asked..")
                 result = chain({"question": query})
                 logger.debug("results:{}".format(result['answer']))
-                # time.sleep(3)
+                # time.sleep(1)
                 # with get_openai_callback() as cb:
-                # st.session_state.chat_history = result['chat_history']
+                st.session_state.chat_history = result['chat_history']
+
                 logger.debug("get chat_history")
                 response = result['answer']
                 source_documents = result['source_documents']
