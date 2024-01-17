@@ -205,7 +205,7 @@ def get_conversation_chain(vetorestore):
     # Currently only 'text2text-generation', 'text-generation', 'summarization' are supported
     # repo_id = 'google/mt5-base'
 
-    repo_id = 'megastudy/M-SOLAR-10.7B-v1.3'
+    repo_id = 'madatnlp/mist-enko-lora-2950'
     llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
