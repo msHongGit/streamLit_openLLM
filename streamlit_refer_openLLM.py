@@ -202,7 +202,7 @@ def get_conversation_chain(vetorestore):
     # logger.debug("Set HF-LLM model")
 
     # Create llm chain    
-    llm_chain = HuggingFaceHub(repo_id="hyeogi/SOLAR-10.7B-dpo-v1", model_kwargs={"temperature":0.2, "max_length":512})
+    llm_chain = HuggingFaceHub(repo_id="mistralai/Mistral-7B-v0.1", model_kwargs={"temperature":0.2, "max_length":512})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
 
