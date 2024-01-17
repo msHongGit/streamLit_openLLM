@@ -151,8 +151,9 @@ def get_conversation_chain(vetorestore):
     model_id = "kyujinpy/Ko-PlatYi-6B"
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    model = AutoModelForCausalLM.from_pretrained(model_id)
+    logger.debug("Get HF-LLM tokenizer")
 
+    model = AutoModelForCausalLM.from_pretrained(model_id)
     logger.debug("load HF-LLM model")
 
     # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
