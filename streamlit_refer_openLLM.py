@@ -202,7 +202,7 @@ def get_conversation_chain(vetorestore):
     # logger.debug("Set HF-LLM model")
 
     # Create llm chain
-    repo_id = 'davidkim205/komt-mistral-7b-v1'
+    repo_id = 'openai/whisper-large-v3'
     llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
