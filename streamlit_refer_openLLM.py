@@ -201,8 +201,9 @@ def get_conversation_chain(vetorestore):
     # llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)
     # logger.debug("Set HF-LLM model")
 
-    # Create llm chain    
-    llm_chain = HuggingFaceHub(repo_id="openai/whisper-large-v3", model_kwargs={"temperature":0.2, "max_length":512})
+    # Create llm chain
+    repo_id = 'beomi/OPEN-SOLAR-KO-10.7B'
+    llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
     # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
     logger.debug("Load HF-LLM model")
 
