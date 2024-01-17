@@ -55,8 +55,11 @@ def main():
 
     if process:     # 만약 Process 버튼이 눌리면        
         files_text = get_text(uploaded_files)
+        logger.debug("get_text")
         text_chunks = get_text_chunks(files_text)
+        logger.debug("get_text_chunks")
         vetorestore = get_vectorstore(text_chunks)
+        logger.debug("get_vectorstore")
      
         st.session_state.conversation = get_conversation_chain(vetorestore)
 
@@ -88,10 +91,10 @@ def main():
             chain = st.session_state.conversation
             
             with st.spinner("Thinking..."):     # 로딩시 progress를 표시하는 UI                
-                result = chain({"question": query})                
-                time.sleep(0.5)
-                st.session_state.chat_history = result['chat_history']
-                response = result['answer']
+                result = chain({"question": query})
+                with get_openai_callback() as cb:
+                    st.session_state.chat_history = result['chat_history']                
+                response = result['answer']                
                 source_documents = result['source_documents']
 
                 st.markdown(response)
@@ -134,14 +137,13 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
-
     model_name = "jhgan/ko-sbert-nli"   # 한국어 임베딩 모델 로딩
     encode_kwargs = {'normalize_embeddings': True}    # 임베딩을 통해 원하는 근거 자료를 찾는 retriver 역할을 하기 위해 정규화를 켜야함
     embeddings = HuggingFaceEmbeddings(
                                         model_name=model_name,
                                         encode_kwargs=encode_kwargs
                                         )  
-    vectordb = FAISS.from_documents(text_chunks, embeddings)
+    vectordb = FAISS.from_documents(text_chunks, embeddings)    
     return vectordb
 
 def get_conversation_chain(vetorestore):
@@ -151,7 +153,9 @@ def get_conversation_chain(vetorestore):
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(model_id)
 
-        # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
+    logger.debug("load HF-LLM model")
+
+    # 모델을 통해 질문을 보내고 답변 받는 과정 (파이프라인)
     text_generation_pipeline = pipeline(
         model=model,
         tokenizer=tokenizer,
@@ -186,6 +190,8 @@ def get_conversation_chain(vetorestore):
     # Create llm chain
     llm_chain = LLMChain(llm=koplatyi_llm, prompt=prompt)
 
+    logger.debug("Set HF-LLM model")
+
     conversation_chain = ConversationalRetrievalChain.from_llm(
             llm=llm_chain, 
             chain_type="stuff", 
@@ -195,6 +201,9 @@ def get_conversation_chain(vetorestore):
             return_source_documents=True,   # LLM이 참고한 문서를 출력하도록 설정
             verbose=True
         )
+
+    logger.debug("Set conversation_chain")
+    
     return conversation_chain
 
 # def get_conversation_chain(vetorestore, openai_api_key):
