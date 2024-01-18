@@ -146,9 +146,8 @@ def get_text_chunks(text):
     chunks = text_splitter.split_documents(text)
     return chunks
 
-def get_vectorstore(text_chunks):
-    # model_name = "jhgan/ko-sbert-nli"   # 한국어 임베딩 모델 로딩
-    model_name = "google/flan-t5-xxl"   # 한국어 임베딩 모델 로딩    
+def get_vectorstore(text_chunks):    
+    model_name = "jhgan/ko-sroberta-multitask"   # 한국어 임베딩 모델 로딩
     encode_kwargs = {'normalize_embeddings': True}    # 임베딩을 통해 원하는 근거 자료를 찾는 retriver 역할을 하기 위해 정규화를 켜야함
     embeddings = HuggingFaceEmbeddings(
                                         model_name=model_name,
@@ -157,9 +156,9 @@ def get_vectorstore(text_chunks):
     vectordb = FAISS.from_documents(text_chunks, embeddings)    
     return vectordb
 
-def get_conversation_chain(vetorestore):    
+def get_conversation_chain(vetorestore):
     # repo_id = 'mistralai/Mistral-7B-v0.1'
-    # repo_id = 'psyche/KoT5-summarization'    
+    # repo_id = 'psyche/KoT5-summarization'
     # llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
 
     llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.1, "max_length":512})
