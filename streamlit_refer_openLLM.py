@@ -147,7 +147,8 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
-    model_name = "jhgan/ko-sbert-nli"   # 한국어 임베딩 모델 로딩
+    # model_name = "jhgan/ko-sbert-nli"   # 한국어 임베딩 모델 로딩
+    model_name = "google/flan-t5-xxl"   # 한국어 임베딩 모델 로딩    
     encode_kwargs = {'normalize_embeddings': True}    # 임베딩을 통해 원하는 근거 자료를 찾는 retriver 역할을 하기 위해 정규화를 켜야함
     embeddings = HuggingFaceEmbeddings(
                                         model_name=model_name,
@@ -157,39 +158,24 @@ def get_vectorstore(text_chunks):
     return vectordb
 
 def get_conversation_chain(vetorestore):    
-    repo_id = 'mistralai/Mistral-7B-v0.1'
+    # repo_id = 'mistralai/Mistral-7B-v0.1'
     # repo_id = 'psyche/KoT5-summarization'    
-    llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
-    # llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
+    # llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
+
+    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.1, "max_length":512})
     logger.debug("Load HF-LLM model")
 
-    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer')
     conversation_chain = ConversationalRetrievalChain.from_llm(
             llm=llm_chain, 
             chain_type="stuff",
             retriever=vetorestore.as_retriever(search_type='mmr', vervose=True), 
-            memory=memory,  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
+            memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer'),  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
             get_chat_history=lambda h: h,   # 들어온 그대로 히스토리에 넣도록 설정
             return_source_documents=True,   # LLM이 참고한 문서를 출력하도록 설정
             verbose=True
         )
-
-    logger.debug("Set conversation_chain")
-    
+    logger.debug("Set conversation_chain")    
     return conversation_chain
-
-# def get_conversation_chain(vetorestore, openai_api_key):
-#     llm = ChatOpenAI(openai_api_key=openai_api_key, model_name='gpt-3.5-turbo', temperature=0)
-#     conversation_chain = ConversationalRetrievalChain.from_llm(
-#             llm=llm, 
-#             chain_type="stuff", 
-#             retriever=vetorestore.as_retriever(search_type = 'mmr', vervose = True), 
-#             memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer'),  # chat_history 저장, 답변에 해당하는 부분만 히스토리에 닮도록 설정
-#             get_chat_history=lambda h: h,   # 들어온 그대로 히스토리에 넣도록 설정
-#             return_source_documents=True,   # LLM이 참고한 문서를 출력하도록 설정
-#             verbose=True
-#         )
-#     return conversation_chain
 
 if __name__ == '__main__':
     main()
