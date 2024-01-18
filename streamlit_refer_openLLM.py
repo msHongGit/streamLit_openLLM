@@ -157,11 +157,10 @@ def get_vectorstore(text_chunks):
     return vectordb
 
 def get_conversation_chain(vetorestore):
+    repo_id = 'google/mt5-base'
     # repo_id = 'mistralai/Mistral-7B-v0.1'
     # repo_id = 'psyche/KoT5-summarization'
-    # llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2, "max_length":512})
-
-    llm_chain = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.1, "max_length":512})
+    llm_chain = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.1, "max_length":512})
     logger.debug("Load HF-LLM model")
 
     conversation_chain = ConversationalRetrievalChain.from_llm(
